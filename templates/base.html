@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+  <meta charset="utf-8">
+  <title>PyCon JP 2015 </title>
+  <meta name="description" content="Presentation by Jeremy Nelson for PyCon Japan 2015 in Tokyo, Japan">
+  <meta name="author" content="Jeremy Nelson">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- FONT  -->
+  <link href="//fonts.googleapis.com/css?family=Raleway:400,300,600" rel="stylesheet" type="text/css">
+
+  <!-- CSS  -->
+
+  <link rel="stylesheet" href="{{ url_for('static', filename="css/normalize.css") }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename="css/skeleton.css") }}">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="{{ url_for('static', filename="images/favicon.png") }}">
+  <style>
+   body {
+     background-color: #2A397A {# #BFDCEF  #3A599C #};
+     color: #D5FAC4;
+   } 
+   h5 a {
+     color: #E8FEAC;
+     -moz-text-decoration-style: dotted;
+     text-decoration-style: dotted; 
+   }
+
+   .button {
+     color: white;
+   }
+
+  </style>
+
+</head>
+<body>
+  {% block main %}
+  <!-- Primary Page Layout -->
+  <div class="container">
+    <div class="row">
+      <section class="eleven column" style="margin-top: 5%">
+        <h5 class='u-pull-right'><a href="{{ url_for('homu') }}">http://intro2libsys.info/pycon-jp-2015</a></h5>
+      </section>
+    </div>
+    <div class="row">
+      <div class="one-half column" style="margin-top: 15%">
+        <h2>Linked Data Fragments Server with Redis &amp; Python Asynco</h2>
+        <h4>Jeremy Nelson<br>Metadata and Systems Librarian<br>Colorado College</h4>
+        <p>This index.html page is a placeholder with the CSS, font and favicon. It's just waiting for you to add some content! If you need some help hit up the <a href="http://www.getskeleton.com">Skeleton documentation</a>.</p>
+      </div>
+      <section class="one-half column" style="margin-top: 15%">
+         <img src="{{ url_for('static', filename='images/pycon-jp-logo-alt.png') }}" class="">
+      </section>
+    </div>
+    {% include 'snippets/slide-nav.html' %}
+  </div>
+  {% endblock %}
+<!-- End Document  -->
+  </body>
+</html>
