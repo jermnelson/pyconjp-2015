@@ -9,6 +9,10 @@ app = Flask(__name__)
 def suradio(name):
     return render_template('slides/{}.html'.format(name))
 
+@app.route("/resources")
+def risosu():
+    return render_template('resources.html')
+
 @app.route("/")
 def homu():
     return render_template('index.html')

@@ -19,6 +19,7 @@
 
   <!-- Favicon -->
   <link rel="icon" type="image/png" href="{{ url_for('static', filename="images/favicon.png") }}">
+  {% block style %}
   <style>
    body {
      background-color: #2A397A {# #BFDCEF  #3A599C #};
@@ -35,17 +36,20 @@
    }
 
   </style>
-
+  {% endblock %}
 </head>
 <body>
-  {% block main %}
-  <!-- Primary Page Layout -->
   <div class="container">
     <div class="row">
       <section class="eleven column" style="margin-top: 5%">
         <h5 class='u-pull-right'><a href="{{ url_for('homu') }}">http://intro2libsys.info/pycon-jp-2015</a></h5>
       </section>
     </div>
+  </div>
+
+  {% block main %}
+  <!-- Primary Page Layout -->
+  <div class="container">
     <div class="row">
       <div class="one-half column" style="margin-top: 15%">
         <h2>Linked Data Fragments Server with Redis &amp; Python Asynco</h2>
