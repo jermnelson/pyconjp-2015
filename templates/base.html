@@ -16,7 +16,6 @@
 
   <link rel="stylesheet" href="{{ url_for('static', filename="css/normalize.css") }}">
   <link rel="stylesheet" href="{{ url_for('static', filename="css/skeleton.css") }}">
-
   <!-- Favicon -->
   <link rel="icon" type="image/png" href="{{ url_for('static', filename="images/favicon.png") }}">
   {% block style %}
@@ -37,6 +36,7 @@
 
   </style>
   {% endblock %}
+  <script src="{{ url_for('static', filename="js/ga.js") }}"></script>
 </head>
 <body>
   <div class="container">
