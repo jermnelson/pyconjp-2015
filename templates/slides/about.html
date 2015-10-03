@@ -3,8 +3,24 @@
 {% block main %}
 <div class="container">
   <h1>About</h1>
+  <p class="intro">
+    This presentation is about the preliminary results for the development of a 
+    Linked Data Fragment Server - built using Python and Redis - for providing a 
+    lightweight mechanism to retrieve cached RDF triples for use by Semantic Web
+    applications. 
+  </p>
   <div class="row">
-     </div>
+    <section class="four columns">
+     <h2>The Problem</h2>
+     <p class="intro">
+      Providing a full SPARQL endpoint for both small and large RDF linked-data sets is 
+      costly both in time and resources, especially for more complex queries. 
+     </p>
+    </section>
+    <section class="seven columns">
+     <h2>A Promising Alternative</h2>
+    </section>
+  </div>
 {% include 'snippets/slide-nav.html' %}
 </div>
 {% endblock %}

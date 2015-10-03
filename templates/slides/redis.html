@@ -3,8 +3,25 @@
 {% block main %}
 <div class="container">
   <h1>Redis</h1>
-
-
+  <img src="{{ url_for('static', filename='images/redis.png') }}" 
+       class="u-pull-left">
+  <p style="font-size: 1.2em">
+   Redis is a NoSQL key-value data server, recently ranked as one of the top
+   technologies for data representation. Going beyond a simple string key and value
+   store like Memecache, Redis provides a rich set of data structures like hashes, lists,
+   sets, sorted-sets, and most recently a GIS data structures that stores all of the 
+   data in a machines RAM while providing two types of persistence to disk, a snapshot
+   variant that periodically saves everything to disk and an append-only mode, that logs
+   every change to the disk store.  
+  </p>
+  <div class="row">
+   <section class="one-half columns">
+    <h3>Redis Overview</h3> 
+   </section>
+   <section class="one-half column">
+    <h3>Linked Data Fragments in Redis</h3>
+   </section>
+  </div>
 {% include 'snippets/slide-nav.html' %}
 </div>
 {% endblock %}
