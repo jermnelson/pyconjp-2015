@@ -5,15 +5,15 @@
  <a href="{{ url_for('suradio', name='rdf-linked-data') }}" 
     class="button{% if request.path == '/slides/rdf-linked-data' %} button-primary{% endif %} ">
     RDF &amp; Linked Data</a>
+ <a href="{{ url_for('suradio', name='bibframe-dpla') }}" 
+    class="button{% if request.path == '/slides/bibframe-dpla' %} button-primary{% endif %}">BIBFRAME &amp; DPLA</a>
  <a href="{{ url_for('suradio', name='redis') }}" 
     class="button{% if request.path == '/slides/redis' %} button-primary{% endif %}">Redis</a>
- <a href="{{ url_for('suradio', name='falcon-api') }}" 
-    class="button{% if request.path == '/slides/falcon-api' %} button-primary{% endif %}">Falcon API</a>
- <a href="{{ url_for('suradio', name='python-asynco') }}" 
-    class="button{% if request.path == '/slides/python-asynco' %} button-primary{% endif %}">Python Asynco</a>
+ <a href="{{ url_for('suradio', name='python-asynco-falcon') }}" 
+    class="button{% if request.path == '/slides/python-asynco-falcon' %} button-primary{% endif %}">Python Falcon &amp; Asynco</a>
  <a href="{{ url_for('suradio', name='benchmarks') }}" 
     class="button{% if request.path == '/slides/benchmarks' %} button-primary{% endif %}">Benchmarks</a>
  <a href="{{ url_for('risosu') }}" 
     class="button{% if request.path == '/resources' %} button-primary{% endif %}">Resources</a>
-</section>    
-
+ </section>    
+</div>
