@@ -5,7 +5,7 @@
   <h1>Redis</h1>
   <img src="{{ url_for('static', filename='images/redis.png') }}" 
        class="u-pull-left">
-  <p style="font-size: 1.2em">
+  <p class="intro">
    Redis is a NoSQL key-value data server, recently ranked as one of the top
    technologies for data representation. Going beyond a simple string key and value
    store like Memecache, Redis provides a rich set of data structures like hashes, lists,
@@ -16,12 +16,70 @@
   </p>
   <div class="row">
    <div class="six columns">
-    <h3>Redis Overview</h3> 
-   </div>
+    <h3>Redis Overview</h3>
+    <p>
+     Redis is an open-source key-value datastore, written in C, with a design goal to
+     extremely fast and memory efficient as all of the data is loaded in RAM. Redis also
+     provides two modes to persist it's data to disk; a RDF mode that takes a user-defined 
+     periodic snapshot and an incremental AOF mode that appends and writes any changes made
+     to the data to a log file.
+    </p>
+    <h4>Lua Server-side Functions</h4>
+    <p>Redis's design pattern for loading and executing server-side Lua scripts was an 
+    inspiration for the eventual design for the Linked Data Fragments Server. For each individual
+    subjects, predicates, and objects in a triple, a sha1 hash digest is calcuated from the string
+    serialization of the each element in the triple and used as a key with the actual entity's value
+    stored at that location. </p> 
+   </div> 
    <div class="six columns">
     <h3>Linked Data Fragments<br> in Redis</h3>
-   </div>
+    <p class="intro">
+    <a href="http://ruben.verborgh.org/">Ruben Verborgh</a> of <a href="">Ghent University</a> in 
+    Belgium originated the concept of Linked Data Fragments that offer a middle-ground between 
+    different options for access RDF graph data. Instead of requiring massive client or server 
+    processing required for hosting a full SPARQL endpoint, the Linked Data Fragments approach
+    instead offers a lightweight querying pattern called a 
+    <strong>Triple Pattern Fragment</strong>.
+    </p>
+    <p>
+    <strong>Triple Pattern Fragment</strong> is 
+    made up of data matching a <em>subject-predicate-object</em> triple pattern, metadata 
+    consisting of the total triple count, and controls for browsing all of the other fragments 
+    in the same dataset.  A Triple Pattern Fragments server is a server that offers this service. 
+    A Triple Pattern Fragments client can connect to the Triple Pattern Fragments server and can 
+    as well deconstruct SPARQL queries into the simpler triple pattern fragments queries to the server. 
+    </p>
   </div>
+</div>
+<pre>
+<code>
+~/redis/src/rdis-server
+$ src/redis-server 
+16414:C 07 Oct 11:11:20.771 # Warning: no config file specified, using the default config. In order to specify a config file use src/redis-server /path/to/redis.conf
+16414:M 07 Oct 11:11:20.774 * Increased maximum number of open files to 10032 (it was originally set to 256).
+                _._                                                  
+           _.-``__ ''-._                                             
+      _.-``    `.  `_.  ''-._           Redis 3.0.3 (00000000/0) 64 bit
+  .-`` .-```.  ```\/    _.,_ ''-._                                   
+ (    '      ,       .-`  | `,    )     Running in standalone mode
+ |`-._`-...-` __...-.``-._|'` _.-'|     Port: 6379
+ |    `-._   `._    /     _.-'    |     PID: 16414
+  `-._    `-._  `-./  _.-'    _.-'                                   
+ |`-._`-._    `-.__.-'    _.-'_.-'|                                  
+ |    `-._`-._        _.-'_.-'    |           http://redis.io        
+  `-._    `-._`-.__.-'_.-'    _.-'                                   
+ |`-._`-._    `-.__.-'    _.-'_.-'|                                  
+ |    `-._`-._        _.-'_.-'    |                                  
+  `-._    `-._`-.__.-'_.-'    _.-'                                   
+      `-._    `-.__.-'    _.-'                                       
+          `-._        _.-'                                           
+              `-.__.-'                                               
+
+16414:M 07 Oct 11:11:20.780 # Server started, Redis version 3.0.3
+16414:M 07 Oct 11:11:20.781 * The server is now ready to accept connections on port 6379
+</code>
+    </pre>
+  <hr>
 {% include 'snippets/slide-nav.html' %}
 </div>
 {% endblock %}
