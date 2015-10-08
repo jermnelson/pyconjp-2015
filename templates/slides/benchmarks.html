@@ -3,8 +3,33 @@
 {% block main %}
 <div class="container">
   <h1>Benchmarks</h1>
-
-
+  <div class="row">
+    <section class="seven columns">
+     <h3>Initial Design</h3>
+     <p class="intro">
+      The initial design of the Linked Data Fragments Server involved first converting 
+      all subjects, predicates, and objects in our RDF graphs into SHA1 hashes and then 
+      using the resulting digest as a key with the value being the original entity. For each
+      triple in the RDF graph, a composite key is constructed with the subject SHA1 hash digest,
+      predicate SHA1 hash digest, and object SHA1 hash digest separated by a colon ":" that was
+      set as a key with the value being a JSON representation of the triple.  
+     </p>
+     <p>
+      Using the Redis <strong>KEYS</strong> command that supports glob pattern matching on the 
+      entire datastore, triples can be retrieved using different patterns:
+     </p>
+     <h4>Examples</h3>
+     <table>
+       
+     </table>
+    </section>
+    <section class="four columns">
+     <h3>Issues</h3>
+     <ul class="intro">
+       
+     </ul> 
+    </section>
+  </div>
 {% include 'snippets/slide-nav.html' %}
 </div>
 {% endblock %}
