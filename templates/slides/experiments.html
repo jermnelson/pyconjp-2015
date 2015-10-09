@@ -282,7 +282,7 @@ for count in [1000, 2500, 5000, 10000, 25000, 50000, 75000, 100000, 250000, 5000
 </div>
 <hr>
 <h1>Using Redis Hashes</h1>
-<p>An alternative to using the constructed Redis triple key from the three different sha1 for 
+<p>An alternative to using the constructed Redis triple key from the three different SHA1 for 
 each subject-predicate-object triple, is to use Redis hashes to store triple information.
 A first pass at this approach would be for all of the predicate-objects of a subject would
 be stored at a hash with a key suffix of <strong>:predicate-objects</strong>. 

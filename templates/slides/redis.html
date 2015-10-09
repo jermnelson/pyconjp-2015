@@ -10,23 +10,20 @@
    technologies for data representation. Going beyond a simple string key and value
    store like Memecache, Redis provides a rich set of data structures like hashes, lists,
    sets, sorted-sets, and most recently a GIS data structures that stores all of the 
-   data in a machines RAM while providing two types of persistence to disk, a snapshot
+   data in a machines RAM while providing two types of persistence; a snapshot
    variant that periodically saves everything to disk and an append-only mode, that logs
-   every change to the disk store.  
+   every change to disk.  
   </p>
   <div class="row">
    <div class="six columns">
     <h3>Redis Overview</h3>
     <p>
-     Redis is an open-source key-value datastore, written in C, with a design goal to
-     extremely fast and memory efficient as all of the data is loaded in RAM. Redis also
-     provides two modes to persist it's data to disk; a RDF mode that takes a user-defined 
-     periodic snapshot and an incremental AOF mode that appends and writes any changes made
-     to the data to a log file.
+     Redis is an open-source, written in C, with a design goal to
+     extremely fast and memory efficient as all of the data is loaded in RAM.
     </p>
     <p>
-     The official documentation of Redis is extensive and provides a bonus of providing you
-     the OLog efficiency of your Redis commands for specific types of data structures. In 
+     The official documentation of Redis is extensive and as a bonus of providing you
+     the Big O notation about the efficiency of your Redis commands for specific types of data structures. In 
      this way, you can do an quick estimate of the time efficiency of your data structures in 
      your code.</p>
     <h4 style="width: 50%">O(1) == Good!!</h4> 
@@ -50,7 +47,7 @@ b'3'
    <div class="six columns">
     <h4>Lua Server-side Functions</h4>
     <p>Redis's design pattern for loading and executing server-side Lua scripts was an 
-    inspiration for the eventual design for the Linked Data Fragments Server. For these
+    inspiration for the design for the Linked Data Fragments Server. For these
     Server Side scripts, you can load the script once and a SHA1 hash digest of the script
     is returned that you can use in subsequent function calls instead of sending the entire
     script over the network each time you want to execute the function.</p>
@@ -78,11 +75,10 @@ b'1'
  <div class="row">
     <h3>Linked Data Fragments<br> in Redis</h3>
     <p class="intro">
-    <strong>Triple Pattern Fragment</strong> is 
-    made up of data matching a <em>subject-predicate-object</em> triple pattern. 
-    For each individual
-    subjects, predicates, and objects in a triple, a sha1 hash digest is calculated from the string
-    serialization of the each element in the triple and used as a key with the actual entity's value
+    For each 
+    subject, predicate, and object in a RDF graph's triple, a SHA1 hash 
+    digest is calculated from the string
+    serialization of the each element and used as a key with the actual entity's value
     stored at that location.
     </p>
     <table>
@@ -117,9 +113,7 @@ True
 b'http://bibframe.org/vocab/Work'
     </pre>
     <p class="intro"> 
-      The initial design of the Linked Data Fragments Server involved first converting 
-      all subjects, predicates, and objects in our RDF graphs into SHA1 hashes and then 
-      using the resulting digest as a key with the value being the original entity. For each
+      For each
       triple in the RDF graph, a composite key is constructed with the subject SHA1 hash digest,
       predicate SHA1 hash digest, and object SHA1 hash digest separated by a colon ":".</p>
     <p>To store the triple above, we set an integer value of 1 for the key:<br>

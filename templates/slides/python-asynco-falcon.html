@@ -3,16 +3,15 @@
 {% block main %}
 <div class="container">
   <h1>Python Asynco &amp; Falcon</h1>
-  <p class="intro">Using Python as A Triple Pattern Fragments server. The web interactions with 
-   the Triple Pattern Fragments server is simple, provide as url parameter one or two values of 
-   either a subject, predicate, or object and the server will return the first 100 results of 
-   all of the triples that match the pattern. The <strong>s</strong> being the subject, 
-   <strong>p</strong> for the predicate, and
-   <strong>o</strong> parameter being the object. 
+  <p class="intro">Using Python as a Triple Pattern Fragments server is relatively simple, 
+   with a client querying the server with url and one or more parameters in the query string, 
+   with a <strong>s</strong> parameter for the subject, 
+   <strong>p</strong> paramter for the predicate, and
+   <strong>o</strong> parameter for the object. 
   </p>
   <p>
    For example, if I want to retrieve all of the 
-   predicate and objects for a subject, a GET request would look something like:
+   predicates and objects for a subject, a GET request would look something like:
    <code>
     http://ldfs-server?s=http://catalog.coloradocollege.edu/58052458
    </code> 
@@ -41,9 +40,8 @@
   <div class="row">
    <section class="seven columns">
      <h3>Comparing Two Server Approaches</h3>
-     <p>Initially, started with a pure Python 3.4 implementation of a
-      socket server using asynco. I had read about the <em>asynco</em> module and
-      although I was more familiar with other web-frameworks, I want to see if an 
+     <p>I had read about the <em>asynco</em> module and
+      although I was more familiar with other web-frameworks, I wanted to see if an 
       asynco was any faster or more comprehensible than other approaches. I implemented
       two versions of the server, one using the 
       <a href="http://aiohttp.readthedocs.org/en/stable/">aiohttp</a> module and the 
