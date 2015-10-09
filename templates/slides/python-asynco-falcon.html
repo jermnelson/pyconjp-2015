@@ -3,18 +3,145 @@
 {% block main %}
 <div class="container">
   <h1>Python Asynco &amp; Falcon</h1>
+  <p class="intro">Using Python as A Triple Pattern Fragments server. The web interactions with 
+   the Triple Pattern Fragments server is simple, provide as url parameter one or two values of 
+   either a subject, predicate, or object and the server will return the first 100 results of 
+   all of the triples that match the pattern. The <strong>s</strong> being the subject, 
+   <strong>p</strong> for the predicate, and
+   <strong>o</strong> parameter being the object. 
+  </p>
+  <p>
+   For example, if I want to retrieve all of the 
+   predicate and objects for a subject, a GET request would look something like:
+   <code>
+    http://ldfs-server?s=http://catalog.coloradocollege.edu/58052458
+   </code> 
+   The server should then return back to the 
+   client a JSON response that varies depending on the request. For the GET request above, the 
+   response would look like:
+   <pre>
+{ 
+  "subject": "http://catalog.coloradocollege.edu/58052458",
+  "predicate-objects": 
+    [
+     { "p":"http://www.w3.org/1999/02/22-rdf-syntax-ns#type", "o":"http://bibframe.org/vocab/Text" },
+     { "p":"http://bibframe.org/vocab/authorizedAccessPoint", "o":"Janke, Steven J., 1947- Introduction to linear models and statistical inference / Steven J. Janke, Frederick C. Tinsley.Introduction to linear models and statistical inference" },
+     { "p":"http://bibframe.org/vocab/contributor", "o":"http://catalog.coloradocollege.edu/58052458person7" },
+     { "p":"http://bibframe.org/vocab/language", "o":"http://id.loc.gov/vocabulary/languages/eng" },
+     { "p":"http://bibframe.org/vocab/classificationLcc", "o":"http://id.loc.gov/authorities/classification/QA279" },
+     { "p":"http://bibframe.org/vocab/workTitle", "o":"http://catalog.coloradocollege.edu/58052458title5" },
+     { "p":"http://bibframe.org/vocab/creator", "o":"http://catalog.coloradocollege.edu/58052458person6" },
+     { "p":"http://bibframe.org/vocab/subject", "o":"http://catalog.coloradocollege.edu/58052458topic9" },
+     { "p":"http://bibframe.org/vocab/authorizedAccessPoint", "o":"jankestevenj1947tinsleyfrederick1951introductiontolinearmodelsandstatisticalinferenceengworktext" },
+     { "p":"http://www.w3.org/1999/02/22-rdf-syntax-ns#type", "o":"http://bibframe.org/vocab/Work" }   
+   ]
+}
+   </pre>
+  </p>
   <div class="row">
    <section class="seven columns">
      <h3>Comparing Two Server Approaches</h3>
      <p>Initially, started with a pure Python 3.4 implementation of a
-      socket server using asynco 
+      socket server using asynco. I had read about the <em>asynco</em> module and
+      although I was more familiar with other web-frameworks, I want to see if an 
+      asynco was any faster or more comprehensible than other approaches. I implemented
+      two versions of the server, one using the 
+      <a href="http://aiohttp.readthedocs.org/en/stable/">aiohttp</a> module and the 
+      second using <a href="http://falconframework.org/">Falcon</a> REST API. 
+      All source code is available on Github for the Linked Data Fragments Server
+      at <a href="https://github.com/jermnelson/linked-data-fragments">https://github.com/jermnelson/linked-data-fragments</a>. 
+      
+     </p>
    </section>
    <section class="four columns">
-     <article style="border: 2px solid black; background-color: rgb(255, 100, 255)">
+     <article style="border: 2px solid black; 
+                     background-color: rgb(255, 100, 255); 
+                     padding: .5em">
        <h2>Quick Explanation of Asynco</h2>
+       <p class="intro"><strong>Warning overly simplistic!!</strong> 
+        The <a href="https://docs.python.org/3/library/asyncio.html#module-asyncio">asynco</a> module provides a programming 
+        approach for building single-threaded concurrent code that allows your code
+        to continue processing without being blocked by long running processes such as
+        I/O operations. The asynco module also provides event-loop semantics, coroutines, 
+        and tasks to support concurrence. 
      </article>
    </section>
   </div>
-{% include 'snippets/slide-nav.html' %}
+<hr>
+     <h4>Aiosync Version (<a href="https://github.com/jermnelson/linked-data-fragments/blob/development/server.py">server.py</a>)</h4>
+     <pre>
+     <code>
+@asyncio.coroutine
+def handle_triple(request):
+    if request.method.startswith('POST'):
+        data = request.POST
+    elif request.method.startswith('GET'):
+        data = request.GET
+    else:
+        data = {}
+    subject_key = yield from cache.get_digest(data.get('s'))
+    predicate_key = yield from cache.get_digest(data.get('p'))
+    object_key = yield from cache.get_digest(data.get('o'))
+    result = yield from cache.get_triple(subject_key, predicate_key, object_key)
+    output = {"subject": data.get('s'),
+              "predicate-objects": []}
+
+    for triple_key in result:
+        triples = triple_key.decode().split(":")
+        predicate = yield from cache.get_value(triples[1]) 
+        object_ = yield from cache.get_value(triples[-1])
+        output["predicate-objects"].append(
+            {"p": predicate,
+             "o": object_})
+    return web.Response(body=json.dumps(output).encode(),
+                        content_type="application/json")
+
+     </code>
+     </pre>
+     <h4>Falcon Version (<a href="https://github.com/jermnelson/linked-data-fragments/blob/development/api.py">api</a>)</h4>
+     <pre>
+     <code>
+def triple_key(req, resp, params):
+    if len(params) < 1:
+        params = req.params
+    subj = params.get('s', None)
+    pred = params.get('p', None)
+    obj = params.get('o', None)
+    triple_str, resp.body = None, None
+    if subj and pred and obj:
+        triple_str = CACHE.datastore.evalsha(
+            CACHE.add_get_triple,
+            3,
+            subj,
+            pred,
+            obj)
+        if triple_str and CACHE.datastore.exists(triple_str):
+            triple_key = triple_str.decode()
+            triple_digests = triple_key.split(":")
+            resp.body = json.dumps(
+                {"key": triple_str.decode(),
+                 "subject_sha1": triple_digests[0],
+                 "predicate_sha1": triple_digests[1],
+                 "object_sha1": triple_digests[2]}
+            )
+        elif triple_str:
+            resp.body = json.dumps(
+                {"missing-triple-key": triple_str.decode()}
+            )
+        else:
+            raise falcon.HTTPNotFound()
+    # Subject search
+    if subj and not pred and not obj:
+        pattern = "{}:*:*".format(hashlib.sha1(str(subj).encode()).hexdigest())
+        output = {"subject": str(subj),
+                  "predicate-objects": []}
+        for triple_key in CACHE.datastore.keys(pattern):
+            triples = triple_key.decode().split(":")
+            output["predicate-objects"].append({"p": CACHE.datastore.get(triples[1]).decode(),
+                                                "o": CACHE.datastore.get(triples[-1]).decode()})
+        resp.body = json.dumps(output)
+    </code>
+    </pre>
+   {% include 'snippets/slide-nav.html' %}
 </div>
 {% endblock %}

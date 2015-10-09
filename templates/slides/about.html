@@ -6,21 +6,43 @@
   <p class="intro">
     This presentation is about the preliminary results for the development of a 
     Linked Data Fragment Server - built using Python and Redis - for providing a 
-    lightweight mechanism to retrieve cached RDF triples for use by Semantic Web
-    applications. 
+    lightweight mechanism for retrieving cached RDF triples for use by Semantic Web
+    applications.  
   </p>
   <div class="row">
     <section class="four columns">
      <h2>The Problem</h2>
      <p class="intro">
       Providing a full SPARQL endpoint for both small and large RDF linked-data sets is 
-      costly both in time and resources, especially for more complex queries. 
+      costly both in time and resources, especially for more complex queries. This 
+      often results in poor responses and unreliable service, especially if the SPARQL 
+      endpoint trying to handle multiple clients querying the RDF graph database.   
      </p>
     </section>
     <section class="seven columns">
      <h2>A Promising Alternative</h2>
+    <a href="http://ruben.verborgh.org/">Ruben Verborgh</a> of <a href="">Ghent University</a> in 
+    Belgium originated the concept of <a href="http://linkeddatafragments.org">Linked Data Fragments</a> 
+    that offers a middle-ground between 
+    different options for accessing RDF graph data. Instead of requiring high server 
+    processing load required for hosting a full SPARQL endpoint or the alternative of just 
+    providing a data dump where all of the data is processed locally to be useful, the Linked 
+    Data Fragments approach
+    instead offers a lightweight querying pattern called a 
+    <strong>Triple Pattern Fragment</strong> that returns  one or more triples based on a simplified
+    syntax.
+    </p>
     </section>
   </div>
+  <hr>
+  <section>
+     This presentation is licensed under the 
+     <a href="http://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>, 
+     source code available on Github at <a href="https://github.com/jermnelson/pyconjp-2015">https://github.com/jermnelson/pyconjp-2015</a> 
+     and uses <a href="http://flask.pocoo.org/">Flask</a> and
+     <a href="http://getskeleton.com/">Skeleton</a>.
+  </section>
+  <hr>
 {% include 'snippets/slide-nav.html' %}
 </div>
 {% endblock %}

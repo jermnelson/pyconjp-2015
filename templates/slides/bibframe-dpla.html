@@ -3,7 +3,105 @@
 {% block main %}
 <div class="container">
   <h1>BIBFRAME &amp; DPLA Linked Data</h1>
+  <hr>
+  <h2>BIBFRAME</h2>
 
+   <p class="intro">
+      <a href="http://bibframe.org/">BIBFRAME</a>, short for Bibliographic Framework initiative,
+      is a Library of Congress 
+      <a href="http://www.loc.gov/bibframe/">initiative</a> to replace a close to 50 year-old legacy
+      format called <a href="http://www.loc.gov/marc/">MARC</a> with a Linked Data vocabulary.
+      The <a href="http://www.loc.gov">Library of Congress</a> is the largest governmental library 
+      in the United States and is the closest organization Americans have to a national library. 
+      BIBFRAME is made up four major classes, Works, Instances, Annotations, and 
+      Authorities.  
+   </p>
+   <img src="{{ url_for('static', filename='images/bibframe.png') }}">
+   <p style="font-size: .8em"><em><a href="http://bibframe.org/vocab-model/">Source</a></em></p>
+   <h4>Work</h4>
+    <p>A <a href="http://bibframe.org/vocab/Work.html">Work</a> is 
+     <em>"&hellip; a resource reflecting a conceptual essence of the cataloging resource." </em>
+     <a href="http://bibframe.org/vocab-model/">source</a>
+    </p>
+    <p>A Work example in RDF Turtle format for <em>Pride and Prejudice</em> by Jane Austen</p>
+    <pre>
+    <code>
+&lt;http://catalog.coloradocollege.edu/4124646&gt; a bf:Text,
+        bf:Work ;
+    bf:authorizedAccessPoint "Austen, Jane, 1775-1817. Pride and prejudice / Jane Austen ; with illustrations by Edgard Cirlin.Pride and prejudice",
+        "austenjane17751817cirlinedgard1913prideandprejudiceengworktext"@x-bf-hash ;
+    bf:classification &lt;http://catalog.coloradocollege.edu/4124646classification10&gt;,
+        &lt;http://catalog.coloradocollege.edu/4124646classification9&gt; ;
+    bf:contributor &lt;http://catalog.coloradocollege.edu/4124646person7&gt; ;
+    bf:creator &lt;http://catalog.coloradocollege.edu/4124646person6&gt; ;
+    bf:language &lt;http://id.loc.gov/vocabulary/languages/eng&gt; ;
+    bf:workTitle &lt;http://catalog.coloradocollege.edu/4124646title5&gt; .
+   </code>
+   </pre>
+  <h4>Instance</h4>
+  <p>An <a href="http://bibframe.org/vocab/Instance">Instance</a> is 
+  <em>"&hellip; a resource reflecting an individual, material embodiment of the Work."</em>
+  <a href="http://bibframe.org/vocab-model/">source</a></>
+  <p>An Instance example in RDF Turtle format for <em>Pride and Prejudice</em> by Jane Austen
+  </p>
+  <pre>
+  <code>
+&lt;http://catalog.coloradocollege.edu/4124646instance13&gt; a bf:Instance,
+        bf:Monograph ;
+    bf:dimensions "21 cm." ;
+    bf:extent "435 p. :" ;
+    bf:illustrationNote "ill. ;" ;
+    bf:instanceOf &lt;http://catalog.coloradocollege.edu/4124646&gt; ;
+    bf:instanceTitle &lt;http://catalog.coloradocollege.edu/4124646title16&gt; ;
+    bf:modeOfIssuance "single unit" ;
+    bf:providerStatement "Cleveland : Fine Editions Press, 1946." ;
+  </code>
+  </pre>
+  <h4>Authority</h4>
+  <p>An <a href="http://bibframe.org/vocab/Authority">Authority</a> is <em>"&hellip; a resource reflecting key authority concepts that have defined relationships 
+      reflected in the Work and Instance. "</em> <a href="http://bibframe.org/vocab-model/">source</a>
+
+  </p>
+  <p>A Person Authority example in RDF Turtle format for Jane Austen</p>
+  <pre>
+  <code>
+&lt;http://catalog.coloradocollege.edu/4124646person6&gt; a bf:Person ;
+    bf:authorizedAccessPoint "Austen, Jane, 1775-1817." ;
+    bf:hasAuthority [ a madsrdf:Authority ;
+            madsrdf:authoritativeLabel "Austen, Jane, 1775-1817." ] ;
+    bf:label "Austen, Jane, 1775-1817." .
+  </code>
+  </pre>
+  <h4>Annotation</h4>
+  <p>An <a href="http://bibframe.org/vocab/Annotation">Annotation</a> is <em>"&hellip;  a 
+   resource that enhances our knowledge about another resource when knowing, 
+   minimally, 'who' is doing the annotating is important.</em> 
+  <a href="http://bibframe.org/vocab-model/">source</a>
+  </p>
+  <p>Example of provenance note for the Pride and Prejudice Work above:</p>
+  <pre>
+  <code>
+&lt;http://catalog.coloradocollege.edu/4124646annotation12&gt; a bf:Annotation ;
+    bf:annotates &lt;http://catalog.coloradocollege.edu/4124646&gt; ;
+    bf:changeDate "1998-04-13T12:32" ;
+    bf:derivedFrom &lt;http://catalog.coloradocollege.edu/4124646.marcxml.xml&gt; ;
+    bf:descriptionConventions &lt;http://id.loc.gov/vocabulary/descriptionConventions/isbd&gt; ;
+    bf:descriptionSource &lt;http://id.loc.gov/vocabulary/organizations/iqu&gt; ;
+    bf:generationProcess "DLC transform-tool:2015-07-23-T17:01:00" .
+  </code>
+  </pre>
+<hr>
+<h2>Digital Public Library of America (<a href="http://dp.la">dp.la</a>)</h2>
+<p class="intro">Founded in 2011 as a non-profit organization that provides a platform and portal
+ for open and coherent access to the United States digitized cultural heritage that aggregates
+ and harvests content from libraries, musuems, corporations, and other organizations while 
+ providing an API for developers to interact directly with their collections.</p>
+<p>DPLA's metadata structure and vocabulary into a 
+<a href="http://dp.la/info/developers/map/">Metadata Application Profile</a> that is based on the 
+<a href="http://pro.europeana.eu/page/edm-documentation">Europeana Data Model</a>. 
+</p>
+ <img src="{{ url_for('static', filename='images/dpla-map.png') }}">
+    <p style="font-size: .8em"><em><a href="http://dp.la/info/wp-content/uploads/2015/03/MAPv4.pdf">Source</a></em></p>
 
 {% include 'snippets/slide-nav.html' %}
 </div>
