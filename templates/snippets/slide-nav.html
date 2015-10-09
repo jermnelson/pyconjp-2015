@@ -12,7 +12,10 @@
  <a href="{{ url_for('suradio', name='python-asynco-falcon') }}" 
     class="button{% if request.path == '/slides/python-asynco-falcon' %} button-primary{% endif %}">Python Falcon &amp; Asynco</a>
  <a href="{{ url_for('suradio', name='experiments') }}" 
-    class="button{% if request.path == '/slides/experiments' %} button-primary{% endif %}">Experiments</a> 
+    class="button{% if request.path == '/slides/experiments' %} button-primary{% endif %}">Experiments</a>
+  <a href="{{ url_for('suradio', name='next-steps') }}" 
+    class="button{% if request.path == '/slides/next-steps' %} button-primary{% endif %}">Next Steps</a> 
+ 
  <a href="{{ url_for('risosu') }}" 
     class="button{% if request.path == '/resources' %} button-primary{% endif %}">Resources</a>
  </section>    
