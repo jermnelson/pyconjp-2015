@@ -38,7 +38,6 @@ True
 b'1'
 >>> local_redis.hmset("numbers", {"ichi":1, "ni":2, "san": 3})
 >>> local_redis.hgetall("numbers")
->>> local_redis.hgetall("numbers")
 {b'ni': b'2', b'san': b'3', b'ichi': b'1'}
 >>> local_redis.hget("numbers", "san")
 b'3'  

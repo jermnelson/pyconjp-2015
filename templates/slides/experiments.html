@@ -70,6 +70,8 @@ for count in range(1, 11):
 
      </code>
      </pre>
+<img src="{{ url_for('static', filename="images/redis-keys-10.png") }}"><br>
+<hr>
 <h3>Testing Falcon API</h3>
 <p>Now that we have baseline for the raw performance of the KEYS command,
 we'll now run the same test but this time use the <em>requests</em> to connect
@@ -86,20 +88,24 @@ for count in range(1,11):
     falcon_trials.append(falcon_timer)
     </code>
     </pre>
+<img src="{{ url_for('static', filename="images/falcon-keys-10.png") }}"><br>
+<hr>
 <h3>Testing Asynco</h3>
 <p>Here is the setup testing code for the Asynco server:</p>
     <pre>
     <code>
 setup_stmt = """import requests"""
-falcon_stmt="""requests.get("http://localhost:18150", data={"s": "http://catalog.coloradocollege.edu/58052458"})"""
-falcon_trials = []
+asynco_stmt = """requests.get("http://localhost:7000?s=http://catalog.coloradocollege.edu/58052458")"""
+asynco_trials = []
 for count in range(1,11):
-    falcon_timer = timeit.timeit(stmt=falcon_stmt, setup=setup_stmt, number=count)
-    falcon_trials.append(falcon_timer)
+    asynco_timer =  timeit.timeit(stmt=asynco_stmt, setup=setup_stmt, number=count)
+    asynco_trials.append(asynco_timer)
     </code>
     </pre>
+<img src="{{ url_for('static', filename="images/asynco-keys-10.png") }}">
+<hr>
 <div class="row">
- <section class="seven columns">
+ <section class="eight columns">
   <table>
    <thead>
     <th># of Runs</th>
@@ -172,11 +178,7 @@ for count in range(1,11):
   </table>
   <img src="{{ url_for('static', filename="images/all-keys-10.png") }}">
  </section>
- <section class="five columns">
-  <img src="{{ url_for('static', filename="images/redis-keys-10.png") }}"><br>
-  <img src="{{ url_for('static', filename="images/falcon-keys-10.png") }}"><br>
-  <img src="{{ url_for('static', filename="images/asynco-keys-10.png") }}">
- </section>
+
  </div>
  <h4>Interpreting</h4>
  <p>From this first pass, we see that regardless of the test, as the number of trials increased,
