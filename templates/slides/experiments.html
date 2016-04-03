@@ -1,0 +1,378 @@
+{% extends 'yaku.html' %}
+
+{% block main %}
+<div class="container">
+  <h1>Experimental Results</h1>
+  <div class="row">
+    <section class="seven columns">
+     <h2>Redis KEYS Experiment</h2>
+     <p class="intro">
+      The test set for most of these experiments uses RDF BIBFRAME graphs transformed 
+      from Colorado College's most popular material's MARC records  
+      using the Library of 
+      Congress's <a href="https://github.com/lcnetdev/marc2bibframe">marc2bibframe</a> conversion 
+      program. Some properties of this sample set are:
+     </p>
+     <table>
+       <thead>
+        <tr>
+         <th>MARC Records</th>
+         <th>Triples</th>
+         <th>Works</th>
+         <th>Instances</th>
+         <th>Size MB</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+         <td>17,144</td>
+         <td>2,539,234</td>
+         <td>33,535</td>
+         <td>17,144</td>
+         <td>625.05</th>
+        </tr>
+      </tbody>
+     </table>
+     
+     <p>
+      Using the Redis <a href="http://redis.io/commands/keys"><strong>KEYS</strong></a> command that supports glob pattern matching on the 
+      entire datastore, To test the raw performance of retrieving an single RDF graph for a
+      particular work, we'll use the Python <em>timeit</em> function and graph the results with
+      Matplotlib with this code snippet to try to simulate a linear increase in useage, initially
+      starting from 1 to 10 
+     </p>
+    </section>
+    <section class="four columns">
+     <h3>Issues</h3>
+     <ul class="intro">
+       <li>The Redis <strong>KEYS</strong> command is O(n) so as the size of the data set increases, the        performance
+       of the command degrades in linear (or worse) fashion</li>
+       <li>The <strong>KEYS</strong> command also blocks the Redis Server from 
+       receiving any additional commands and is not advised to use in production
+       systems.</li>
+       <li>No de-duplication of a subjects; i.e. if work 1 is generated from converting a MARC record
+        for Pride and Prejudice copy 1, and work 2 is generated from converting a MARC record copy 2,
+        we'll duplicate the triples even though the two records are essentially the same.</li> 
+     </ul> 
+    </section>
+  </div>
+    
+     <pre>
+     <code>
+import timeit
+redis_setup_stmt = """import redis
+cc_popular = redis.StrictRedis()"""
+redis_stmt="""cc_popular.keys("17e3f5ff4da952ec9d9f850a571a8d9cf5b1ec69:*:*")"""
+redis_trials = []
+for count in range(1, 11):
+	redis_timer = timeit.timeit(stmt=redis_stmt, setup=redis_setup_stmt, number=count)
+	redis_trials.append(redis_timer)
+
+     </code>
+     </pre>
+<img src="{{ url_for('static', filename="images/redis-keys-10.png") }}"><br>
+<hr>
+<h3>Testing Falcon API</h3>
+<p>Now that we have baseline for the raw performance of the KEYS command,
+we'll now run the same test but this time use the <em>requests</em> to connect
+to a running Falcon API instance to see what overhead adding a REST service adds
+to the Redis</p>
+    <pre>
+    <code>
+import requests
+setup_stmt = """import requests"""
+falcon_stmt="""requests.get("http://localhost:18150", data={"s": "http://catalog.coloradocollege.edu/58052458"})"""
+falcon_trials = []
+for count in range(1,11):
+    falcon_timer = timeit.timeit(stmt=falcon_stmt, setup=setup_stmt, number=count)
+    falcon_trials.append(falcon_timer)
+    </code>
+    </pre>
+<img src="{{ url_for('static', filename="images/falcon-keys-10.png") }}"><br>
+<hr>
+<h3>Testing Asynco</h3>
+<p>Here is the setup testing code for the Asynco server:</p>
+    <pre>
+    <code>
+setup_stmt = """import requests"""
+asynco_stmt = """requests.get("http://localhost:7000?s=http://catalog.coloradocollege.edu/58052458")"""
+asynco_trials = []
+for count in range(1,11):
+    asynco_timer =  timeit.timeit(stmt=asynco_stmt, setup=setup_stmt, number=count)
+    asynco_trials.append(asynco_timer)
+    </code>
+    </pre>
+<img src="{{ url_for('static', filename="images/asynco-keys-10.png") }}">
+<hr>
+<div class="row">
+ <section class="eight columns">
+  <table>
+   <thead>
+    <th># of Runs</th>
+    <th>Direct Redis</th>
+    <th>Falcon API</th>
+    <th>Asynco</th>
+   </thead>
+   <tbody>
+<tr>
+ <td>1</td>
+ <td>1.2281699029845186</td>
+ <td>1.2685371820116416</td>
+ <td>1.3175828389939852</td>
+</tr>
+<tr>
+ <td>2</td>
+ <td>2.6082807540078647</td>
+ <td>2.768362994014751</td>
+ <td>3.0104295710334554</td>
+</tr>
+<tr>
+ <td>3</td>
+ <td>3.5183271229616366</td>
+ <td>3.5287525659659877</td>
+ <td>3.708122154988814</td>
+</tr>
+<tr>
+ <td>4</td>
+ <td>4.681248573004268</td>
+ <td>4.727095118025318</td>
+ <td>4.8970251709688455</td>
+</tr>
+<tr>
+ <td>5</td>
+ <td>5.818655456008855</td>
+ <td>5.897049093968235</td>
+ <td>6.1605203920044005</td>
+</tr>
+<tr>
+ <td>6</td>
+ <td>7.248136567999609</td>
+ <td>7.0755964029813185</td>
+ <td>7.360615084005985</td>
+</tr>
+<tr>
+ <td>7</td>
+ <td>8.514002248994075</td>
+ <td>8.32872693700483</td>
+ <td>8.533214915019926</td>
+</tr>
+<tr>
+ <td>8</td>
+ <td>9.544208430976141</td>
+ <td>9.583168470009696</td>
+ <td>9.845916612015571</td>
+</tr>
+<tr>
+ <td>9</td>
+ <td>10.48881931899814</td>
+ <td>10.6294925850234</td>
+ <td>11.09655712498352</td>
+</tr>
+<tr>
+ <td>10</td>
+ <td>13.434723928978201</td>
+ <td>13.046950068033766</td>
+ <td>12.24355677596759</td>
+</tr>
+   </tbody>
+  </table>
+  <img src="{{ url_for('static', filename="images/all-keys-10.png") }}">
+ </section>
+
+ </div>
+ <h4>Interpreting</h4>
+ <p>From this first pass, we see that regardless of the test, as the number of trials increased,
+ our execution time increased in roughly linear fashion. This is encouraging and what we would
+ expect. Second, neither Falcon or the Asynco HTTP server added much overhead to the execution 
+ of the code. Finally, there are not any appreciable differences between our Falcon and 
+ Asynco server code, making the choice between the more of a choice between style and easy of
+ maintenance rather than performance.</p>
+ <p>We should be careful about drawing too many conclusions from this test run as it should
+ be repeated a few more times to make sure our results are still consistent over time. But
+ for now, we'll look at how we can improve the Redis backend implementation to use something
+ other than the <strong>KEYS</strong> command before we start trying to optimize what 
+ server technology to use; Falcon or Asynco.
+</p>
+<hr>
+<h2>Redis SCAN Experiment</h2>
+<p class="intro">
+ As mentioned in the issues section in our first experiment, using the Redis <strong>KEYS</strong>
+ is discouraged in production. Redis provides an alternative to the keys which doesn't block the 
+ server called <a href="http://redis.io/commands/scan"><strong>SCAN</strong></a> that has O(1) 
+ time complexity per call. The <strong>SCAN</strong> command takes a cursor and with each call 
+ does one iteration. Eventually, calling the <strong>SCAN</strong>
+ command multiple times will iterate through the entire Redis key space. The slice of the command
+ space by which the <strong>SCAN</strong> can be adjusted with a <strong>COUNT</strong> parameter.
+</p>
+<p>In the test setup code below, we are just going to keep the number of runs consistent at 10
+but vary the size of the <strong>COUNT</strong> parameter. Remember from our last test, the 
+average it took to execute 10 runs <strong>KEYS</strong> command with our straight Redis call 
+was 13 seconds.
+</p>
+<pre>
+<code>
+redis_setup = """import redis
+cache_redis = redis.StrictRedis()
+def test_redis_scan(count):
+    cur = 0
+    output = []
+    while 1:
+        cur, results = cache_redis.scan(cur, match="17e3f5ff4da952ec9d9f850a571a8d9cf5b1ec69:*:*", count=count)
+        if len(results) > 0:
+            output.extend(results)
+        if not cur:
+            break
+    return output"""
+scan_trials = []
+for count in [1000, 2500, 5000, 10000, 25000, 50000, 75000, 100000, 250000, 500000]:
+    redis_stmt = "test_redis_scan({})".format(count)
+    redis_timer = timeit.timeit(stmt=redis_stmt, setup=redis_setup, number=10)
+    scan_trials.append((count, redis_timer))
+</code>
+</pre>
+<div class="row">
+  <section class="six columns">
+   <table>
+    <thead>
+      <th>Count</th>
+      <th>Time (seconds)</th>
+    </thead>
+    <tbody>
+<tr>
+<td>1000</td><td>93.26906220900128</td>
+</tr>
+<tr>
+<td>2500</td><td>102.64958874002332</td>
+</tr>
+<tr>
+<td>5000</td><td>96.19367762497859</td>
+</tr>
+<tr>
+<td>10000</td><td>94.76345123304054</td>
+</tr>
+<tr>
+<td>25000</td><td>91.95245929301018</td>
+</tr>
+<tr>
+<td>50000</td><td>97.29142061399762</td>
+</tr>
+<tr>
+<td>75000</td><td>90.68025794799905</td>
+</tr>
+<tr>
+<td>100000</td><td>91.00262290996034</td>
+</tr>
+<tr>
+<td>250000</td><td>96.62939810799435</td>
+</tr>
+<tr>
+<td>500000</td><td>88.64146210596664</td>
+</tr>
+    </tbody>
+   </table>
+  </section>
+  <section class="six columns">
+   <h1 style="font-size: 2.5">Yikes!</h1>
+   <img src="{{ url_for('static', filename="images/redis-scan-10.png") }}">
+   <p>
+   Even the best result with 500,000 count size for 10 trials was 88 seconds, significantly
+   worse than our <strong>KEYS</strong> test from above. Is there any alternative approaches
+   we can examine? Yes! One of the nice features of Redis is that we can use a different
+   data structure to improve performance. 
+   </p>
+  </section>
+</div>
+<hr>
+<h1>Using Redis Hashes</h1>
+<p>An alternative to using the constructed Redis triple key from the three different SHA1 for 
+each subject-predicate-object triple, is to use Redis hashes to store triple information.
+A first pass at this approach would be for all of the predicate-objects of a subject would
+be stored at a hash with a key suffix of <strong>:predicate-objects</strong>. 
+In this model the subject hash fields would still use the "predicate-sha1-digest:object-sha1-digest" 
+pattern and with the field value being an 1 integer. 
+For the subject used in our example, the companion redis key would be:<br>
+<strong>17e3f5ff4da952ec9d9f850a571a8d9cf5b1ec69:predicate-objects</strong>.
+</p>
+<pre>
+<code>
+>>> local_redis.hgetall('17e3f5ff4da952ec9d9f850a571a8d9cf5b1ec69:predicate-objects')
+{b'f610f749c5c2eaf6718eb2bc24bf74559d14637d:1509401ff5fecad20101ebb147f77d82407b75ae': b'1', 
+ b'a548a25005963f85daa1215ad90f7f1a97fbe749:899c924e4dc30d79cb6d11b5d03542e1e3d8c381': b'1', 
+ b'a20301af19937f3787275c059dae953eaff2cb5f:262798fe370ba8f32d0aa9b40381c1cab4b8ae22': b'1', 
+ b'a548a25005963f85daa1215ad90f7f1a97fbe749:8eda00df792b5ab31f14febf8fbae9f78bf820e7': b'1', 
+ b'3c197cb1f6842dc41aa48dc8b9032284bcf39a27:5d1377f4476a1cbfb3caea106dc6b0a7d086410a': b'1', 
+ b'0ba43b890c824baa68a0d304bbd0baab6bff921a:9c1020be297eed7dc8106954d1600ecd68448a64': b'1', 
+ b'38e711cd1701b5f99ae70f2c9974aae8a24944d1:23b04598de49ffeeddf305afbdea4d7fa3127299': b'1', 
+ b'0f08c96e756a4fa720257bf3090efdf76b5d3acc:0672781095db8ffcb1977d58687125df74c3e5c7': b'1', 
+ b'1800d68bd2be5785c5505e09329f3d37b02c9d01:978170a2adcba8e0f7c41158c420d642110cd59e': b'1', 
+ b'3c197cb1f6842dc41aa48dc8b9032284bcf39a27:0139c97cff6054f868eadb4b0e70a58da37238bd': b'1'}
+</code>
+</pre>
+<p>Now we'll run this test code and see what the results are</p>
+<pre>
+<code>
+redis_setup = """import redis
+cache_redis = redis.StrictRedis()"""
+redis_stmt = """cache_redis.hgetall('17e3f5ff4da952ec9d9f850a571a8d9cf5b1ec69:predicate-objects')"""
+redis_hash_trials = []
+for count in range(1,11):
+    hash_timer =  timeit.timeit(stmt=redis_stmt, setup=redis_setup, number=count)
+    redis_hash_trials.append(hash_timer)
+</code>
+</pre>
+<div class="row">
+<section class="five columns">
+<table>
+ <thead>
+    <th># of Runs</th>
+    <th>Time in Seconds</th>
+ </thead>
+ <tbody>
+<tr>
+<td>1</td><td>0.00512834801338613</td>
+</tr>
+<tr>
+<td>2</td><td>0.002946369000710547</td>
+</tr>
+<tr>
+<td>3</td><td>0.002188334008678794</td>
+</tr>
+<tr>
+<td>4</td><td>0.0025909639662131667</td>
+</tr>
+<tr>
+<td>5</td><td>0.0024501450243405998</td>
+</tr>
+<tr>
+<td>6</td><td>0.0027079840074293315</td>
+</tr>
+<tr>
+<td>7</td><td>0.0031070280238054693</td>
+</tr>
+<tr>
+<td>8</td><td>0.003147128038108349</td>
+</tr>
+<tr>
+<td>9</td><td>0.0033804820268414915</td>
+</tr>
+<tr>
+<td>10</td><td>0.004014718986582011</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section class="four columns">
+ <img src="{{ url_for('static', filename='images/redis-hash-10.png') }}"><br>
+</section>
+</div>
+<p>Even running the standard <em>timeit</em> number of 1,000,000 runs results in
+respectable performance using hashes:</p>
+<pre>
+<code>>>> hash_timer =  timeit.timeit(stmt=redis_stmt, setup=redis_setup)
+>>> print(hash_timer)
+243.62794216600014
+</code>
+</pre> 
+    {% include 'snippets/slide-nav.html' %}
+</div>
+{% endblock %}

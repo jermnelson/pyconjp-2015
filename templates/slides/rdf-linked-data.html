@@ -3,8 +3,79 @@
 {% block main %}
 <div class="container">
   <h1>RDF &amp; Linked Data</h1>
-
-
+  <div class="row">
+    <section class="three columns">
+     <h2>Semantic Web</h2>
+     <p class="intro">In 2001, Sir Tim Berners-Lee and others originated the idea of the 
+     <a href="http://www.w3.org/standards/semanticweb/">semantic web</a>, an Internet where web content is understandably 
+      and actionable by computers. </p>
+     <p>Since then, the W3C has lead the effort by coordinating and releasing a number of 
+      specifications and vocabularies to assist in the creation of the semantic web. This
+      work has centered around the creation of graphs to represent data and their relationships
+       through the following:
+     </p>
+     <ul>
+       <li><a href="http://www.w3.org/standards/techs/rdf">Resource Description Framework (RDF)</a>
+       a general purpose language for information representation on the web</li>
+       <li><a href="http://www.w3.org/standards/techs/owl#w3c_all">OWL Web Ontology Language</a> used
+       to describe and create classes, relationships, and properties for data.</li>
+     </ul>
+    </section>
+    <section class="nine columns">
+     <a href="http://lod-cloud.net/versions/2014-08-30/lod-cloud.svg">
+     <img src="{{ url_for('static', filename='images/lod-cloud_colored_1000px.png') }}">
+     </a>
+     <p><em>From The <a href="http://lod-cloud.net/">Linking Open Data Cloud</a></em></p>
+     <ul>
+       <li><a href="http://www.w3.org/standards/techs/skos#w3c_all">Simple Knowledge 
+       Organization System (SKOS)</a> a data model for sharing and linking knowledge between 
+       organizations
+       and vocabularies on the web</li>  
+      <li><a href="http://www.w3.org/TR/rdf-sparql-query/">SPARQL</a> is a RDF graph query language.</li>  
+     </ul>
+     <p>Unlike other types of data representation and storage technologies, RDF graphs 
+      are flexible enough to represent the knowledge systems of wide range of industries and
+      disciplines.</p>
+    </section>
+  </div>
+  <hr>
+  <div class="row">
+    <section class="six columns">
+     <h2>Linked Data</h2>
+     <p>Using RDF, OWL, and SKOS, communities can use their own vocabularies and then publish
+      their data on the web to be used by other applications and organizations.</p>
+     <p>The fundemental data structure used in a RDF graph is the triple, a statement made
+      up of three elements; a <strong>subject</strong>, a <strong>predicate</strong>, and 
+      an <strong>object</strong>.</p>
+      <h3>Subjects</h3>
+      <p>Subjects are restricted to two types; International Resource Indicators (IRI), most
+       commonly URLs or URIs, or can be Blank Nodes, an identifier placeholder unique to specific
+       graph.</p>
+      <h3>Predicates</h3>
+      <p>Predicates must IRI and define a relationship between a subject and an object.</p>
+      <h3>Objects</h3>
+      <p>Objects can be either an IRI, Blank Node, or a literal value.</p>
+      <h3>Example of a RDF Triple</h3>
+      <img src="{{ url_for('static', filename='images/linked-data-triple.png') }}">
+    </section>
+    <section class="six columns">
+     <h2>Libraries, Museums, &amp; Cultural Heritage Organizations</h2>
+     <p>Libraries, along with Museums and other Cultural Heritage Organizations, have
+      started experimenting with putting information about their collections of physical
+      and digital objects on the web as linked-data using RDF vocabularies.</p>
+     <p><a href="http://bibframe.org/">BIBFRAME</a> is a Library of Congress vocabulary
+      that was released in 2012 to replace the legacy MARC21 format used by libraries
+      for describing their collections.</p>
+     <p><a href="http://schema.org/">Schema.org</a> is an international effort to create
+     a general vocabulary for representing entities and their relationships with other 
+     entities on the web is co-sponsored by the major search and technology companies like
+     Google, Microsoft, Yandex, and Yahoo. This vocabulary has an extension mechanism for allowing
+     industries and fields of study to describe their areas. Libraries are one of the first 
+     to provide a specific extension, available at 
+     <a href="http://bib.schema.org/">bib.schema.org</a>.
+     </p>
+    </section>
+  </div>
 {% include 'snippets/slide-nav.html' %}
 </div>
 {% endblock %}
